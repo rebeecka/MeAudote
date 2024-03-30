@@ -1,0 +1,32 @@
+{
+  "name": "api-adocao-pet",
+  "version": "1.0.0",
+  "description": "BackEnd da aplicação de adoção de pets",
+  "main": "index.ts",
+  "license": "ISC",
+  "scripts": {
+    "dev": "tsnd --transpile-only src/infra/http/index.ts"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.20",
+    "@types/module-alias": "^2.0.3",
+    "@types/mongoose": "^5.11.97",
+    "@types/multer": "^1.4.9",
+    "@types/node": "^20.8.10",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/uuid": "^9.0.7",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "mongoose": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.1"
+  }
+}
