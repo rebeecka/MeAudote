@@ -9,7 +9,7 @@ const schema = new Schema({
         type: String,
         required: [true, 'Nome é obrigatório']
     },
-    age: {
+    birthDate: {
         type: String,
         required: [true, 'Idade é obrigatória']
     },

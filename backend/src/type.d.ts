@@ -6,3 +6,4 @@ declare module 'express-serve-static-core' {
         decoded?: payloadToken;
     }
 }
+declare module 'react-native-datepicker';

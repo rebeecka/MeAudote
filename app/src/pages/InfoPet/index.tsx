@@ -85,7 +85,22 @@ export default function InfoPet({ route }: Props) {
       },
     ]);
   }
-
+  function calculateAge(birthDate: Date | null): string {
+    if (!birthDate) return "Data de nascimento não fornecida";
+  
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const month = today.getMonth() - birth.getMonth();
+  
+    if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+  
+    return `${age} anos`;
+  }
+  
+  
   
   return (
     <View style={styles.background}>
@@ -123,7 +138,9 @@ export default function InfoPet({ route }: Props) {
           <Text style={styles.label}>
             Vacinado: {pet.vaccinated ? "Sim" : "Não"}
           </Text>
-          <Text style={styles.label}>Idade: {pet.age}</Text>
+          <Text style={styles.label}>Idade: {calculateAge(pet.birthDate)}</Text>
+
+
         </View>
       </View>
 

@@ -41,7 +41,7 @@ class PetController {
 
     async create(request: Request, response: Response): Promise<Response> {
         try {
-            let { name, age, breed, animal_size, castrated, gender, vaccinated, category, images = [] } = request.body;
+            let { name, birthDate, breed, animal_size, castrated, gender, vaccinated, category, images = [] } = request.body;
             
             images = typeof(images) === 'string' ? JSON.parse(images) : images;
 
@@ -58,7 +58,7 @@ class PetController {
                 });
             }
 
-            const pet = await petService.create({ name, age, breed, animal_size, castrated, gender, vaccinated, category, user: user_id, images: imagesNames });
+            const pet = await petService.create({ name, birthDate, breed, animal_size, castrated, gender, vaccinated, category, user: user_id, images: imagesNames });
 
             return response.send(pet);
         } catch (error) {
@@ -71,7 +71,7 @@ class PetController {
     async update(request: Request, response: Response): Promise<Response> {
         try {
             const id = request.params.id as string;
-            let { name, age, breed, animal_size, castrated, gender, vaccinated, category, images = [], newImages = [] } = request.body;
+            let { name, birthDate, breed, animal_size, castrated, gender, vaccinated, category, images = [], newImages = [] } = request.body;
             
             images = typeof(images) === 'string' ? JSON.parse(images) : images;
             newImages = typeof(newImages) === 'string' ? JSON.parse(newImages) : newImages;
@@ -98,7 +98,7 @@ class PetController {
                 });
             }
 
-            const pet = await petService.update(id, { name, age, breed, animal_size, castrated, gender, vaccinated, category, user: user_id, images: imagesNames }, user_id);
+            const pet = await petService.update(id, { name, birthDate, breed, animal_size, castrated, gender, vaccinated, category, user: user_id, images: imagesNames }, user_id);
 
             return response.send(pet);
         } catch (error) {

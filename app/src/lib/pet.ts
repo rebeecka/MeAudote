@@ -1,6 +1,6 @@
 export interface Pet {
     name: string,
-    age: string,
+    birthDate: Date | null,
     breed: string,
     animal_size: string,
     castrated: boolean,
@@ -29,7 +29,7 @@ interface User {
 export class RegistroPet {
     constructor(
         public name: string,
-        public age: string,
+        public birthDate: Date | null,
         public breed: string,
         public animal_size: string,
         public castrated: boolean,

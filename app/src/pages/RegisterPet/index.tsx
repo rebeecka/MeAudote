@@ -8,6 +8,7 @@ import {
   Alert,
   Image,
   ScrollView,
+  Button,
 } from "react-native";
 import { StackParamsList } from "../../routes/app.routes";
 import { Feather } from '@expo/vector-icons';
@@ -20,6 +21,10 @@ import { ImageList, Pet, RegistroPet } from "../../lib/pet";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { API_URL } from "../../lib/constants";
+import { format, isValid, parse } from 'date-fns';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { black } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
+import { color } from "react-native-elements/dist/helpers";
 
 type RootStackParamList = {
   RegisterPet: { pet: Pet; edit: boolean; };
@@ -44,8 +49,13 @@ export default function RegisterPet({ route }: Props) {
     }
   }, []);
 
+  useEffect(() => {
+    if (edit && pet.birthDate) {
+      setBirthDate(new Date(pet.birthDate));
+    }
+  }, [edit, pet]);
+
   const [name, setName] = useState("");
-  const [age, setAge] = useState("");
   const [breed, setBreed] = useState("");
   const [porte, setPorte] = useState("");
   const [castrated, setCastrated] = useState(false);
@@ -58,6 +68,18 @@ export default function RegisterPet({ route }: Props) {
   const [base64, setBase64] = useState<string[]>([]);
   const [numberPhotos, setNumberPhotos] = useState(0);
   const [imagesToList, setImagesToList] = useState<ImageList>([]);
+
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleDateChange = (event: any, selectedDate: Date | undefined) => {
+    const currentDate = selectedDate || birthDate;
+    setShowDatePicker(false);
+    setBirthDate(currentDate);
+    
+  };
+  
+
 
   const [categories] = useState([
     { key: "cães", label: "Cães" },
@@ -85,8 +107,10 @@ export default function RegisterPet({ route }: Props) {
     try {
       const response = await api.get<Pet>(`/pets/${pet.id}`);
       const respData = response.data;
+      const birthDate: Date | null = respData.birthDate ? new Date(respData.birthDate) : null;
+
       setName(respData.name);
-      setAge(respData.age);
+      
       setBreed(respData.breed);
       setPorte(respData.animal_size);
       setCastrated(respData.castrated);
@@ -103,8 +127,10 @@ export default function RegisterPet({ route }: Props) {
   }
 
   async function handlerRegisterPet() {
+    const birthDateString: string | null = birthDate ? birthDate.toISOString() : null;
     let b64 = imagesToList.map(img => img.base64);
     b64 = b64.filter(img => img != null && img != '');
+    
     const novoRegistro: RegistroPet = {
       name: name,
       images: b64,
@@ -113,7 +139,7 @@ export default function RegisterPet({ route }: Props) {
       animal_size: porte,
       castrated: castrated,
       breed: breed,
-      age: age,
+      birthDate: birthDate,
       gender: gender
     };
 
@@ -125,7 +151,7 @@ export default function RegisterPet({ route }: Props) {
           const data: Pet = {
             id: response.data.id,
             name: response.data.name,
-            age: response.data.age,
+            birthDate: response.data.birthDate,
             breed: response.data.breed,
             images: response.data.images,
             gender: response.data.gender,
@@ -161,7 +187,7 @@ export default function RegisterPet({ route }: Props) {
       animal_size: porte,
       castrated: castrated,
       breed: breed,
-      age: age,
+      birthDate: birthDate,
       gender: gender,
     };
 
@@ -173,7 +199,7 @@ export default function RegisterPet({ route }: Props) {
           const data: Pet = {
             id: response.data.id,
             name: response.data.name,
-            age: response.data.age,
+            birthDate: response.data.birthDate,
             breed: response.data.breed,
             images: response.data.images,
             gender: response.data.gender,
@@ -303,13 +329,26 @@ export default function RegisterPet({ route }: Props) {
           value={name}
           onChangeText={setName}
         />
-        <TextInput
-          placeholder="Idade"
-          placeholderTextColor="black"
-          style={styles.inputText}
-          value={age}
-          onChangeText={setAge}
+        
+  <Button title="Data de nascimento"  onPress={() => setShowDatePicker(true)} color="black"/>
+<TextInput
+  placeholder="Birth Date"
+  value={birthDate ? birthDate.toLocaleDateString('pt-BR'):''}
+  editable={false}
+  
+/>
+      {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={birthDate || new Date()} 
+          mode="date"
+          display="default"
+          locale="pt-BR"
+          onChange={handleDateChange}
         />
+      )}
+
+
         <TextInput
           placeholder="Raça"
           placeholderTextColor="black"
@@ -409,7 +448,7 @@ export default function RegisterPet({ route }: Props) {
           style={[
             styles.button,
             ,
-            !(name && age && breed && porte && categorySelected) && { backgroundColor: "#FB3D41" },
+            !(name && birthDate && breed && porte && categorySelected) && { backgroundColor: "#FB3D41" },
           ]}
           onPress={!edit ? handlerRegisterPet : handlerUpdatePet}
         >
@@ -491,12 +530,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 12,
     marginBottom: 12,
+    
    
   },
   buttonText: {
     color: "#FFF",
     fontSize: 18,
     fontWeight: "bold",
+
   },
   buttonImg: {
     marginVertical: 50,
@@ -519,5 +560,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 40 / 2
-  }
+  },
+ 
 });

@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Pet } from "../../lib/pet";
 import { API_URL } from "../../lib/constants";
+import { format } from "date-fns";
 
 interface CardPetProps {
   pet: Pet;
@@ -9,7 +10,7 @@ interface CardPetProps {
 }
 
 export function CardPet({ pet, selectedItem }: CardPetProps) {
-  const genderSelection = (gender: String) => {
+  const genderSelection = (gender: string) => {
     const imagePath =
       gender === "Macho"
         ? require("../../assets/ic_masculino.png")
@@ -20,6 +21,21 @@ export function CardPet({ pet, selectedItem }: CardPetProps) {
   const selectPet = () => {
     selectedItem(pet);
   };
+
+  function calculateAge(birthDate: Date | null): string {
+    if (!birthDate) return "Data de nascimento não fornecida";
+  
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const month = today.getMonth() - birth.getMonth();
+  
+    if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+  
+    return `${age} anos`;
+  }
 
   return (
     <View style={styles.container}>
@@ -42,7 +58,7 @@ export function CardPet({ pet, selectedItem }: CardPetProps) {
           <View>
             <Text style={styles.title}>{pet.name}</Text>
             <Text style={styles.label}>{pet.breed}</Text>
-            <Text style={styles.label}>{pet.age}</Text>
+            <Text style={styles.label}>{calculateAge(pet.birthDate)}</Text>
           </View>
 
           <View style={styles.containerGender}>

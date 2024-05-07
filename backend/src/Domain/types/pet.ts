@@ -3,7 +3,7 @@ import { ImageModelDb } from "./image";
 export type PetModelDb = {
     _id?: string;
     name: string;
-    age: string;
+    birthDate: string;
     breed: string;
     animal_size: string;
     castrated: boolean;
