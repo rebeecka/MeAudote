@@ -27,15 +27,29 @@ export function CardPet({ pet, selectedItem }: CardPetProps) {
   
     const today = new Date();
     const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const month = today.getMonth() - birth.getMonth();
+    const diffTime = Math.abs(today.getTime() - birth.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   
-    if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) {
-      age--;
+    if (diffDays < 30) {
+      return `${diffDays} dia${diffDays !== 1 ? 's' : ''}`;
+    } else {
+      const yearDiff = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+      const totalMonths = yearDiff * 12 + monthDiff;
+  
+      if (totalMonths < 12) {
+        return `${totalMonths} mes${totalMonths !== 1 ? 'es' : ''}`;
+      } else {
+        const years = Math.floor(totalMonths / 12);
+        const months = totalMonths % 12;
+        if (months === 0) {
+          return `${years} ano${years !== 1 ? 's' : ''}`;
+        } else {
+          return `${years} ano${years !== 1 ? 's' : ''} e ${months} mes${months !== 1 ? 'es' : ''}`;
+        }
+      }
     }
-  
-    return `${age} anos`;
-  }
+}
 
   return (
     <View style={styles.container}>
